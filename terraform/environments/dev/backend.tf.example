@@ -1,0 +1,32 @@
+# Раскомментировать и заполнить после создания бакета в Yandex Object Storage.
+# terraform init нужно будет перезапустить с -reconfigure после добавления.
+#
+# Бакет и статические ключи создаются один раз, вручную или отдельным
+# terraform-проектом с локальным state (bootstrap) — сам себя remote backend
+# создать не может.
+
+# terraform {
+#   backend "s3" {
+#     endpoints = {
+#       s3 = "https://storage.yandexcloud.net"
+#     }
+#     bucket = "forge-tfstate"
+#     key    = "payments/dev/terraform.tfstate"
+#     region = "ru-central1"
+#
+#     skip_region_validation      = true
+#     skip_credentials_validation = true
+#     skip_requesting_account_id  = true
+#     skip_s3_checksum            = true
+#
+#     # access_key / secret_key — НЕ хранить тут. Передавать через
+#     # переменные окружения AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY
+#     # (S3-совместимый backend использует aws-провайдерские env-переменные
+#     # даже для Yandex Object Storage).
+#
+#     # Locking: Yandex Object Storage не поддерживает нативный DynamoDB-lock.
+#     # Начиная с Terraform 1.10 доступен use_lockfile = true — блокировка
+#     # через lock-файл в том же бакете, без отдельной таблицы блокировок.
+#     use_lockfile = true
+#   }
+# }

@@ -1,0 +1,24 @@
+# Положить в ~/.terraformrc (Linux/macOS) или %APPDATA%\terraform.rc (Windows).
+# Без этого файла `terraform init` из России не сможет скачать провайдеры:
+# registry.terraform.io блокирует российские IP с 2022 года.
+#
+# Зеркало Yandex Cloud проксирует HashiCorp Provider Registry Protocol
+# (не путать с Network Mirror Protocol — это разные API, важно использовать
+# именно network_mirror{} блок, а не просто подменить адрес registry).
+
+provider_installation {
+  network_mirror {
+    url     = "https://terraform-mirror.yandexcloud.net/"
+    include = ["registry.terraform.io/*/*"]
+  }
+  direct {
+    exclude = ["registry.terraform.io/*/*"]
+  }
+}
+
+# Если нужны провайдеры не из HashiCorp registry (напр. с github напрямую) —
+# на них правило mirror не действует, для них может понадобиться VPN/прокси
+# отдельно. Yandex-провайдер (yandex-cloud/yandex) идёт из того же зеркала.
+
+# Для CI: этот же файл кладётся по тому же пути внутри контейнера
+# (переменная окружения TF_CLI_CONFIG_FILE может указывать на кастомный путь).
