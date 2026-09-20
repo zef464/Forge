@@ -1,14 +1,12 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 
 	"github.com/spf13/cobra"
 )
 
-var env string
 var yes bool
 
 var createCmd = &cobra.Command{
@@ -17,18 +15,28 @@ var createCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		app := args[0]
-		fmt.Printf("создаю %s в окружении %s\n", app, env)
+		targetEnv := resolveEnv()
 
-		envDir := "../terraform/environments/" + env
-
-		if err := runTerraform(envDir, "init", "-input=false"); err != nil {
+		tok, err := resolveToken()
+		if err != nil {
 			return err
 		}
-		if err := runTerraform(envDir, "plan", "-input=false"); err != nil {
+		cloudID, folderID, err := resolveYandexIDs()
+		if err != nil {
 			return err
 		}
 
-		return nil
+		envDir := "terraform/environments/" + targetEnv
+		tfEnv := []string{
+			"TF_VAR_yc_token=" + tok,
+			"TF_VAR_yc_cloud_id=" + cloudID,
+			"TF_VAR_yc_folder_id=" + folderID,
+		}
+
+		if err := runTerraform(envDir, tfEnv, "init", "-input=false"); err != nil {
+			return err
+		}
+		return runTerraform(envDir, tfEnv, "plan", "-input=false")
 	},
 }
 
@@ -44,6 +52,6 @@ func runTerraform(dir string, args ...string) error {
 func init() {
 	rootCmd.AddCommand(createCmd)
 
-	createCmd.Flags().StringVar(&env, "env", "dev", "environment: dev|staging|prod")
+	rootCmd.PersistentFlags().GetString("env")
 	createCmd.Flags().BoolVar(&yes, "yes", false, "apply immediately, without confirmation")
 }

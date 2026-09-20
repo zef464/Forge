@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var env string
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "cli",
@@ -35,4 +37,10 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	rootCmd.PersistentFlags().StringVar(&env, "env", "", "environment dev|staging|prod")
+
+	rootCmd.PersistentFlags().String("token", "", "Yandex Cloud токен (по умолчанию: credentials.yaml)")
+
+	cobra.OnInitialize(initConfig)
 }
