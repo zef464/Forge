@@ -1,7 +1,13 @@
 terraform {
+  # >= 1.10 нужен для use_lockfile в S3-backend (см. backend.tf.example)
+  required_version = ">= 1.10"
+
   required_providers {
     yandex = {
       source = "yandex-cloud/yandex"
+      # ~> 0.228 = любая 0.x начиная с 0.228 (0.229, 0.240...), но не 1.0.
+      # Точная версия всё равно фиксируется в .terraform.lock.hcl.
+      version = "~> 0.228"
     }
   }
 }

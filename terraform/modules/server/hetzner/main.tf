@@ -8,12 +8,12 @@ terraform {
 }
 
 resource "hcloud_server" "this" {
-  name        = var.name
-  server_type = local.size_map[var.size]
-  image       = var.image
+  name         = var.name
+  server_type  = local.size_map[var.size]
+  image        = var.image
   firewall_ids = [for id in var.firewall_ids : tonumber(id)]
-  ssh_keys    = var.ssh_key_ids
-  labels      = var.labels
+  ssh_keys     = var.ssh_key_ids
+  labels       = var.labels
 
   network {
     network_id = tonumber(var.network_id)
