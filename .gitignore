@@ -1,5 +1,20 @@
-.tfstate
 .exe
 credentials.yaml
 
+# Terraform
+# Скачанные провайдеры и модули — восстанавливаются через terraform init.
 **/.terraform/
+# State содержит реальные id ресурсов и секреты в открытом виде. В git ему не место:
+# локально он лежит рядом с кодом, а потом переедет в remote backend.
+*.tfstate
+*.tfstate.*
+# Лог падения terraform, может содержать чувствительные данные.
+crash.log
+crash.*.log
+# Локальные переопределения, которые каждый держит у себя.
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+# Сохранённые планы (terraform plan -out=...). Внутри есть значения переменных.
+*.tfplan

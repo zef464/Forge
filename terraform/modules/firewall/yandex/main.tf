@@ -27,7 +27,7 @@ resource "yandex_vpc_security_group" "this" {
       description    = ingress.value.description
       v4_cidr_blocks = ingress.value.source_ips
       from_port      = tonumber(ingress.value.port_range[0])
-      to_port         = tonumber(ingress.value.port_range[1])
+      to_port        = tonumber(ingress.value.port_range[1])
     }
   }
 
@@ -38,7 +38,7 @@ resource "yandex_vpc_security_group" "this" {
       description    = egress.value.description
       v4_cidr_blocks = egress.value.source_ips
       from_port      = tonumber(egress.value.port_range[0])
-      to_port         = tonumber(egress.value.port_range[1])
+      to_port        = tonumber(egress.value.port_range[1])
     }
   }
 }
