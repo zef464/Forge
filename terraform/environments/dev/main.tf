@@ -73,6 +73,16 @@ module "firewall" {
       port        = "443"
       source_ips  = ["0.0.0.0/0"]
       description = "https"
+    },
+    {
+      # В Yandex security group без единого egress-правила запрещает ВЕСЬ
+      # исходящий трафик: сервер не сможет сделать apt update, скачать
+      # docker-образ или даже разрезолвить DNS. Поэтому выпускаем наружу всё.
+      direction   = "out"
+      protocol    = "any"
+      port        = "0-65535"
+      source_ips  = ["0.0.0.0/0"]
+      description = "all outbound"
     }
   ]
   labels = local.labels
@@ -86,5 +96,6 @@ module "application" {
   network_id   = module.network.network_id
   subnet_id    = module.network.subnet_ids["app"]
   firewall_ids = [module.firewall.firewall_id]
+  ssh_key_ids  = [trimspace(file(pathexpand(var.ssh_public_key_path)))]
   labels       = local.labels
 }
